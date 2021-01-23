@@ -81,7 +81,7 @@ runJar $APP2_NAME $APP2_SHOWNAME $LOG2_FILE
 sh plan3.sh all
 
 
-docker stop  compassionate_chaplygin
+docker stop  esdata4
 docker stop  logstash
 docker stop  oracle11g
 # docker stop  redis

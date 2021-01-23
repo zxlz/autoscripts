@@ -27,7 +27,7 @@ fi
 sh startdocker.sh
 #启动容器
 sh startcontainer.sh redis
-sh startcontainer.sh compassionate_chaplygin
+sh startcontainer.sh esdata4
 sh startcontainer.sh oracle11g
 #阻塞检查
 echo "检查es的Http协议"
