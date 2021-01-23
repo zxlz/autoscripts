@@ -3,7 +3,9 @@ function runJar(){
 	echo $COUNT
 	if [ $COUNT -eq 0 ]; then
         echo "RUN ${2}"
+        #后台运行
         # java -jar $1 >> $3 2>&1 &
+        #前台运行
         java -jar $1 $4 2>&1 |tee $3 
         echo "RUN ${2} OVER"
 	else
@@ -36,9 +38,9 @@ while ! nc -z 127.0.0.1 1521;
   do printf ".";
   sleep 1
 done
-#等待oracle启动，todo：改外模块内阻塞判断
-  sleep 60
-#启动jar
+#应用内会阻塞等待oracle启动
+#  sleep 60
+#启动jar。 参数：500-100000数字 
 runJar $APP1_NAME $APP1_SHOWNAME $LOG1_FILE 10000
 
 
@@ -75,14 +77,14 @@ runJar $APP2_NAME $APP2_SHOWNAME $LOG2_FILE
 
 
 
-
+#数据给es统计，再抽取结果推给redis 参数：all(全量) 默认增量
 sh plan3.sh all
 
 
 docker stop  compassionate_chaplygin
 docker stop  logstash
 docker stop  oracle11g
-docker stop  redis
+# docker stop  redis
 
 
 echo "ok"
