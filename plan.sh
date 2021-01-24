@@ -14,6 +14,21 @@ function runJar(){
 	
 }
 
+number=10000
+
+if [ -n "$1" ]; then
+  
+  if [ "$1" -ge 500 ] && [ "$1" -le 100000 ]; 
+  then
+    number=$1
+    if [ -n "$2" ] &&  ["$2" = "all" ]; then app3policy=$2; fi
+  else
+    echo "error: 第一个参数只能500-100000内数字！"
+    exit 1
+  fi
+else
+  echo "DEFULT CONFIG"
+fi
 
 
 LOG1_FILE=$(pwd)/logs/spider2oracle.log
@@ -21,7 +36,7 @@ APP1_NAME=/Users/zxl/ideaprojects/zxlspider/out/artifacts/spider2oracle/zxlspide
 APP1_SHOWNAME=spider2oracle
 
 if [ ! -e "$APP1_NAME" ]; then
- echo "${APP1_NAME} 不存在或没有可执行权限"
+ echo "error: ${APP1_NAME} 不存在或没有可执行权限"
  exit 1
 fi
 
@@ -41,7 +56,7 @@ done
 #应用内会阻塞等待oracle启动
 #  sleep 60
 #启动jar。 参数：500-100000数字 
-runJar $APP1_NAME $APP1_SHOWNAME $LOG1_FILE 10000
+runJar $APP1_NAME $APP1_SHOWNAME $LOG1_FILE $number
 
 
 
@@ -50,7 +65,7 @@ LOG2_FILE=$(pwd)/logs/put2redis.log
 APP2_NAME=/Users/zxl/ideaprojects/zxlspider/out/artifacts/put2redis/zxlspider.jar
 APP2_SHOWNAME=put2redis
 if [ ! -e "$APP2_NAME" ]; then
- echo "${APP2_NAME} 不存在或没有可执行权限"
+ echo "error: ${APP2_NAME} 不存在或没有可执行权限"
  exit 1
 fi
 #刷新/创建日志文件
@@ -78,7 +93,7 @@ runJar $APP2_NAME $APP2_SHOWNAME $LOG2_FILE
 
 
 #数据给es统计，再抽取结果推给redis 参数：all(全量) 默认增量
-sh plan3.sh all
+sh plan3.sh $app3policy
 
 
 docker stop  esdata4

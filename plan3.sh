@@ -16,7 +16,7 @@ LOG3_FILE=$(pwd)/logs/putes2redis.log
 APP3_NAME=/Users/zxl/ideaprojects/zxlspider/out/artifacts/putes2redis/zxlspider.jar
 APP3_SHOWNAME=putes2redis
 if [ ! -e "$APP3_NAME" ]; then
- echo "${APP3_NAME} 不存在或没有可执行权限"
+ echo "error: ${APP3_NAME} 不存在或没有可执行权限"
  exit 1
 fi
 #刷新/创建日志文件
