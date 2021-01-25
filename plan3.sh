@@ -1,22 +1,30 @@
 function runJar(){
-	COUNT=$(ps -ef |grep -iw $1 |grep -v "grep" |wc -l)
-	echo $COUNT
-	if [ $COUNT -eq 0 ]; then
-        echo "RUN ${2}"
-        # java -jar $1 >> $3 2>&1 &
-        java -jar $1 $4 2>&1 |tee $3 
-        echo "RUN ${2} OVER"
-	else
-        echo "${2} is RUN"
-	fi
-	
+  COUNT=$(ps -ef |grep -iw $2 |grep -v "grep" |wc -l)
+  echo $COUNT
+  if [ $COUNT -eq 0 ]; then
+        echo "RUN ${3}"
+        #后台运行
+        # java -jar $1 >> $4 2>&1 &
+        #前台运行
+        # java -jar $1 $5 2>&1 |tee $4 
+        java -cp $1 $2 $5 2>&1 |tee $4
+        echo "RUN ${3} OVER"
+  else
+        echo "${3} is RUN"
+  fi
+  
 }
+
+APP_NAME=/Users/zxl/ideaprojects/zxlspider/out/spiderpak-1.0-SNAPSHOT.jar
+
+
 # $1 jar包参数
 LOG3_FILE=$(pwd)/logs/putes2redis.log
-APP3_NAME=/Users/zxl/ideaprojects/zxlspider/out/artifacts/putes2redis/zxlspider.jar
+# APP3_NAME=/Users/zxl/ideaprojects/zxlspider/out/artifacts/putes2redis/zxlspider.jar
+APP3_MAINNAME=run.putEsdataToRedis
 APP3_SHOWNAME=putes2redis
-if [ ! -e "$APP3_NAME" ]; then
- echo "error: ${APP3_NAME} 不存在或没有可执行权限"
+if [ ! -e "$APP_NAME" ]; then
+ echo "error: ${APP_NAME} 不存在或没有可执行权限"
  exit 1
 fi
 #刷新/创建日志文件
@@ -75,7 +83,7 @@ sh startcontainer.sh logstash
 #启动jar 
 # 内部会阻塞校验数据准备完成。 
 # 不带参数：增量方式 带参数：all全部刷新
-runJar $APP3_NAME $APP3_SHOWNAME $LOG3_FILE $1
+runJar $APP_NAME $APP3_MAINNAME $APP3_SHOWNAME $LOG3_FILE $1
 
 
 echo "ok"

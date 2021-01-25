@@ -1,20 +1,22 @@
 function runJar(){
-	COUNT=$(ps -ef |grep -iw $1 |grep -v "grep" |wc -l)
+	COUNT=$(ps -ef |grep -iw $2 |grep -v "grep" |wc -l)
 	echo $COUNT
 	if [ $COUNT -eq 0 ]; then
-        echo "RUN ${2}"
+        echo "RUN ${3}"
         #后台运行
-        # java -jar $1 >> $3 2>&1 &
+        # java -jar $1 >> $4 2>&1 &
         #前台运行
-        java -jar $1 $4 2>&1 |tee $3 
-        echo "RUN ${2} OVER"
+        # java -jar $1 $5 2>&1 |tee $4 
+        java -cp $1 $2 $5 2>&1 |tee $4 
+        echo "RUN ${3} OVER"
 	else
-        echo "${2} is RUN"
+        echo "${3} is RUN"
 	fi
 	
 }
 
 number=10000
+APP_NAME=/Users/zxl/ideaprojects/zxlspider/out/spiderpak-1.0-SNAPSHOT.jar
 
 if [ -n "$1" ]; then
   
@@ -32,11 +34,12 @@ fi
 
 
 LOG1_FILE=$(pwd)/logs/spider2oracle.log
-APP1_NAME=/Users/zxl/ideaprojects/zxlspider/out/artifacts/spider2oracle/zxlspider.jar
-APP1_SHOWNAME=spider2oracle
+# APP1_NAME=/Users/zxl/ideaprojects/zxlspider/out/artifacts/spider2oracle/zxlspider.jar
+APP1_MAINNAME=run.spiderstart
+APP1_SHOWNAME=spiderstart
 
-if [ ! -e "$APP1_NAME" ]; then
- echo "error: ${APP1_NAME} 不存在或没有可执行权限"
+if [ ! -e "$APP_NAME" ]; then
+ echo "error: ${APP_NAME} 不存在或没有可执行权限"
  exit 1
 fi
 
@@ -56,16 +59,17 @@ done
 #应用内会阻塞等待oracle启动
 #  sleep 60
 #启动jar。 参数：500-100000数字 
-runJar $APP1_NAME $APP1_SHOWNAME $LOG1_FILE $number
+runJar $APP_NAME $APP1_MAINNAME $APP1_SHOWNAME $LOG1_FILE $number
 
 
 
 
 LOG2_FILE=$(pwd)/logs/put2redis.log
-APP2_NAME=/Users/zxl/ideaprojects/zxlspider/out/artifacts/put2redis/zxlspider.jar
+# APP2_NAME=/Users/zxl/ideaprojects/zxlspider/out/artifacts/put2redis/zxlspider.jar
+APP2_MAINNAME=run.putDataToRedis
 APP2_SHOWNAME=put2redis
-if [ ! -e "$APP2_NAME" ]; then
- echo "error: ${APP2_NAME} 不存在或没有可执行权限"
+if [ ! -e "$APP_NAME" ]; then
+ echo "error: ${APP_NAME} 不存在或没有可执行权限"
  exit 1
 fi
 #刷新/创建日志文件
@@ -88,7 +92,7 @@ while ! nc -z 127.0.0.1 1521;
   sleep 1
 done
 #启动jar
-runJar $APP2_NAME $APP2_SHOWNAME $LOG2_FILE 
+runJar $APP_NAME $APP2_MAINNAME $APP2_SHOWNAME $LOG2_FILE 
 
 
 
